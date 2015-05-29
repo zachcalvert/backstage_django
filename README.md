@@ -20,7 +20,7 @@ Developed as part of the interview process with Backstage.
 and less than or equal to 100.
 
 * The service should emit a JSON object of the following structure:
-```json
+```
 {
 "datetime":current_datetime,
 "value":solution,
