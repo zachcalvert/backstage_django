@@ -17,7 +17,17 @@ the corresponding db entry is saved.
 """
 def get_difference(request):
 
-	number = request.GET.get('number', '')
+	number = request.GET.get('number', None)
+
+	# ensure a value is provided
+	if not number:
+		return HttpResponse('Please provide a value.', status=400)
+
+	# ensure the value is an integer
+	try:
+		number = int(number)
+	except ValueError:
+		return HttpResponse('Please provide an integer value.', status=400)
 
 	try:
 		c = Calculation.objects.get(number=number)
@@ -25,9 +35,10 @@ def get_difference(request):
 		c.save()
     
 	except Calculation.DoesNotExist:
-		value = calculate_difference(int(number))
+		value = calculate_difference(number)
 		c = Calculation.objects.create(number=number, value=value)
-		
+	
+	# serialize the instance and return the data
 	serializer = CalculationSerializer(c)
 	content = JSONRenderer().render(serializer.data)
 	return HttpResponse(content)

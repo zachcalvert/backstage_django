@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from models import Calculation
 from utils import calculate_difference, square_of_sums, sum_of_squares
 
+
 class CalculationTest(TestCase):
 	"""
 	Ensure that our calculation utility functions work as expected
@@ -30,47 +31,53 @@ class CalculationTest(TestCase):
 
 
 
+def make_calculation(number):
+	value = calculate_difference(number)
+	c = Calculation.objects.create(number=number, value=value)
+	return c
+
 class ServiceTest(TestCase):
-	"""
-	Verify the constructed endpoint is available and returns data in the
-	expected format
-	"""
 	def setUp(self):
-		"""
-		The test db seems to be reading the same data as the "live" db, 
-		hence the get_or_creates
-        """
-        Calculation.objects.get_or_create(number=1, value=0) # correct value
-        Calculation.objects.get_or_create(number=10, value=2640)
-        Calculation.objects.get_or_create(number=100, value=25164150)
+		# Create Calculation instances for the first 5 integers
+		for i in range(5):
+			make_calculation(i)
 
 	def test_service_endpoint(self):
+		"""
+		Ensure that the specified endpoint responds successfully and
+		with the expected data
+		"""
+		response = self.client.get("%s?number=10" % reverse('get_difference'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, '"number":10')
+		self.assertContains(response, '"value":2640')
+		self.assertContains(response, '"occurrences":1')
+
+	def test_occurrences_incrementor(self):
+		"""
+		The number of occurrences for a given Calculation instance should 
+		increase by 1 after a successful request to that resource
+		"""
+		count = Calculation.objects.get(number=1, value=0).occurrences
 		response = self.client.get("%s?number=1" % reverse('get_difference'))
 		self.assertEqual(response.status_code, 200)
-		self.assertEqual(1, Calculation.objects.get(number=1).occurrences)
+		self.assertEqual(count+1, Calculation.objects.get(number=1).occurrences)
 
-		# self.assertContains(response.content, "number")
-		# self.assertContains(response.content, "value"
-		# self.assertContains(response.content, "occurrences"
-		# self.assertContains(response.content, "last_requested"
+	def test_missing_arg(self):
+		"""
+		Verify that a request to the endpoint without a query arg fails
+		in the expected way.
+		"""
+		response = self.client.get("%s?number=" % reverse('get_difference'))
+		self.assertEqual(response.status_code, 400)
+		# self.assertContains(response.content, 'Please provide a value.')
 
-		response = self.client.get("%s?number=1" % reverse('get_difference'))
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(2, Calculation.objects.get(number=1).occurrences)
-
-	# def test_occurrences_incrementor(self):
-	# 	"""
-	# 	The number of occurrences for a given Calculation instance should 
-	# 	increase by 1 after a successful request to that resource
-	# 	"""
-	# 	count = Calculation.objects.get(number=1, value=1).occurrences
-
-	# 	response = self.client.get("%s?number=1" % reverse('get_difference'))
-	# 	self.assertEqual(response.status_code, 200)
-
-	# 	self.assertEqual(count+1, Calculation.objects.get(number=1).occurrences)
-
-
-
-
+	def test_incorrect_arg_type(self):
+		"""
+		Verify that a request to the endpoint with a non-integer query arg fails
+		in the expected way.
+		"""
+		response = self.client.get("%s?number=a" % reverse('get_difference'))
+		self.assertEqual(response.status_code, 400)
+		# self.assertContains(response, 'Please provide an integer value.')
 
