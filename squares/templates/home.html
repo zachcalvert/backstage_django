@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<script src="{{ STATIC_URL }}js/jquery-2.1.4.min.js"></script>
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/base.css"/>
+		<!-- avoid fake favicon requests -->
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+	</head>
+	<body>
+		<div id="header">
+			<h3>Difference Calculator</h3>
+		</div>
+		<div id="input-area">
+			<input type="text" id="id_calculator" value="">
+			<input type="submit" id="submit-button" value="Calculate">
+		</div>
+
+		<div id="output-area">
+			<table id="request-table">
+				<tbody>
+					<tr>
+						<td class="table-header">Number</td>
+						<td class="table-header">Value</td>
+						<td class="table-header">Occurrences</td>
+						<td class="table-header">Last Requested</td>
+					</tr>
+					<tr>
+						<td id="number-result">&nbsp;</td>
+						<td id="value-result">&nbsp;</td>
+						<td id="occurrences-result">&nbsp;</td>
+						<td id="time-result">&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+		<div>
+
+		<script>
+			$(document).ready(function () {
+			    function calculateResult(number) {
+			        $.ajax({
+			            url: 'http://localhost:8000/difference?number=' + number,
+			            type: 'get',
+			            contentType: 'application/json',
+			            success: function(response) {
+			            	// fill table cells with results
+			            	var response_data = JSON.parse(response);
+
+			            	$("#time-result").html(response_data.last_requested);
+			                $("#number-result").html(response_data.number);
+			                $("#value-result").html(response_data.value);
+			                $("#occurrences-result").html(response_data.occurrences);
+			            },
+			            error: function (jqXhr, textStatus, errorThrown) {
+			                console.log(errorThrown);
+			            }
+			        });
+			    };
+
+			    $("#submit-button").click(function(){
+			        var number = $( "#id_calculator" ).val()
+			        calculateResult(number)
+		    	});
+			});
+
+		</script>
+	</body>
+</html>
