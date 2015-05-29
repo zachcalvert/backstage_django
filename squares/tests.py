@@ -30,18 +30,24 @@ class CalculationTest(TestCase):
 
 
 
-# class ServiceTest(TestCase):
-# 	"""
-# 	Do some shit
-# 	"""
-# 	def setUp(self):
-# 		"""
-#         Create some test numbers with history
-#         """
-#         Calculation.objects.create(number=1, value=1, occurrences=3)
-#         Calculation.objects.create(number=10, value=2640, occurrences=5)
+class ServiceTest(TestCase):
+	"""
+	"""
+	def setUp(self):
+		"""
+        """
+        Calculation.objects.get_or_create(number=1, value=1)
+        Calculation.objects.get_or_create(number=10, value=2640)
+        Calculation.objects.get_or_create(number=100, value=25164150)
 
-# 	def test_service_endpoint(self):
-# 		c = Client()
-# 		response = c.get('/difference?=10')
-# 		self.assertEqual(response.status_code, 200)
+	def test_service_endpoint(self):
+		response = self.client.get("%s?number=1" % reverse('get_difference'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response.content, "number")
+		self.assertContains(response.content, "value")
+		self.assertContains(response.content, "occurrences")
+		self.assertContains(response.content, "last_requested")
+
+
+
+

@@ -26,4 +26,5 @@ td, th {
 }
 #output-area {
 	float: left;
+	margin: 10px 0 0 30px;
 }
