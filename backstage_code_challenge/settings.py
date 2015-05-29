@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 
     'squares',
     'django_extensions',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (

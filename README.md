@@ -9,3 +9,4 @@ Developed as part of the interview process with Backstage
 * pip install -r requirements.txt
 * echo "create database code_challenge" | mysql -u root -p  (empty password)
 * ./manage.py migrate
+* ./manage.py runserver
