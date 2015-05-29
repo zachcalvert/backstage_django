@@ -40,7 +40,7 @@ class ServiceTest(TestCase):
 		The test db seems to be reading the same data as the "live" db, 
 		hence the get_or_creates
         """
-        Calculation.objects.get_or_create(number=1, value=1)
+        Calculation.objects.get_or_create(number=1, value=0) # correct value
         Calculation.objects.get_or_create(number=10, value=2640)
         Calculation.objects.get_or_create(number=100, value=25164150)
 
