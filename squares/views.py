@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse
 from rest_framework.renderers import JSONRenderer
 
@@ -17,7 +16,6 @@ If the number is not found, the value is calculated and
 the corresponding db entry is saved.
 """
 
-@csrf_protect
 def get_difference(request):
 
 	number = request.GET.get('number', '')

@@ -5,5 +5,5 @@ import views
 
 urlpatterns = [
 	url(r'^$', TemplateView.as_view(template_name="home.html")),
-    url(r'^difference/$', views.get_difference, name='get_difference'),
+    url(r'^difference$', views.get_difference, name='get_difference'),
 ]
