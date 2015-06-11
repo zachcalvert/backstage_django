@@ -1,6 +1,6 @@
-# Backstage Code Challenge
+# Backstage Django
 
-Developed as part of the interview process with Backstage.
+Developedato solve Problem #6 of Project Euler.
 
 ## Setup
 
