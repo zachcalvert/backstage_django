@@ -1,6 +1,6 @@
 # Backstage Django
 
-Developedato solve Problem #6 of Project Euler.
+Developed to solve Problem #6 of Project Euler.
 
 ## Setup
 
